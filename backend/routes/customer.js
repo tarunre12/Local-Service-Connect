@@ -13,7 +13,7 @@ router.get('/me', async (req, res, next) => {
   try {
     const customer = await db.Customer.findByPk(req.user.id, {
       attributes: { exclude: ['passwordHash'] },
-      include: [{ model: db.Booking, as: 'bookings', include: [{ model: db.Worker, as: 'worker', attributes: ['id', 'firstName', 'lastName', 'rating', 'skills'] }] }],
+      include: [{ model: db.Booking, as: 'bookings', include: [{ model: db.Worker, as: 'worker', attributes: ['id', 'firstName', 'lastName', 'phone', 'rating', 'skills'] }] }],
     });
     if (!customer) return res.status(404).json({ success: false, message: 'Customer not found.' });
 

@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'DynamoDB tables for ServiConnect real-time chat and worker location data'
+
+Parameters:
+  NamePrefix:
+    Type: String
+    Description: Prefix for resource names
+
+Resources:
+  ChatMessagesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub '${NamePrefix}-chat-messages'
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: bookingId
+          AttributeType: S
+        - AttributeName: messageTimestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: bookingId
+          KeyType: HASH
+        - AttributeName: messageTimestamp
+          KeyType: RANGE
+
+  LocationUpdatesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub '${NamePrefix}-location-updates'
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: bookingId
+          AttributeType: S
+        - AttributeName: locationTimestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: bookingId
+          KeyType: HASH
+        - AttributeName: locationTimestamp
+          KeyType: RANGE
+
+Outputs:
+  ChatTableName:
+    Description: DynamoDB table used for booking chat messages
+    Value: !Ref ChatMessagesTable
+  ChatTableArn:
+    Description: ARN of the chat messages table
+    Value: !GetAtt ChatMessagesTable.Arn
+  LocationTableName:
+    Description: DynamoDB table used for worker location updates
+    Value: !Ref LocationUpdatesTable
+  LocationTableArn:
+    Description: ARN of the location updates table
+    Value: !GetAtt LocationUpdatesTable.Arn

@@ -1,6 +1,10 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
+  const uuidArrayType = sequelize.getDialect() === 'postgres'
+    ? DataTypes.ARRAY(DataTypes.UUID)
+    : DataTypes.JSON;
+
   const Booking = sequelize.define('Booking', {
     id:                  { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     customerId:          { type: DataTypes.UUID, allowNull: false },
@@ -14,7 +18,7 @@ module.exports = (sequelize) => {
     },
     price:               { type: DataTypes.FLOAT, allowNull: true },
     aiSuggestedPrice:    { type: DataTypes.FLOAT, allowNull: true },
-    aiMatchedWorkerIds:  { type: DataTypes.ARRAY(DataTypes.UUID), defaultValue: [] },
+    aiMatchedWorkerIds:  { type: uuidArrayType, defaultValue: [] },
     aiJobSummary:        { type: DataTypes.TEXT,  allowNull: true },
     acceptedAt:          { type: DataTypes.DATE,  allowNull: true },
     completedAt:         { type: DataTypes.DATE,  allowNull: true },

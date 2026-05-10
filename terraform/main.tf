@@ -46,6 +46,12 @@ module "rds" {
   ecs_security_group_id  = module.ecs.ecs_security_group_id
 }
 
+# ── DynamoDB (chat + live location) ──────────────────────────
+module "dynamodb" {
+  source      = "./modules/dynamodb"
+  name_prefix = local.name_prefix
+}
+
 # ── ALB ───────────────────────────────────────────────────────
 module "alb" {
   source            = "./modules/alb"
@@ -154,6 +160,18 @@ resource "aws_ssm_parameter" "cognito_client_id" {
   name  = "/${var.project_name}/cognito-client-id"
   type  = "String"
   value = module.cognito.client_id
+}
+
+resource "aws_ssm_parameter" "dynamodb_chat_table" {
+  name  = "/${var.project_name}/dynamodb-chat-table"
+  type  = "String"
+  value = module.dynamodb.chat_table_name
+}
+
+resource "aws_ssm_parameter" "dynamodb_location_table" {
+  name  = "/${var.project_name}/dynamodb-location-table"
+  type  = "String"
+  value = module.dynamodb.location_table_name
 }
 
 # ── Data Sources ──────────────────────────────────────────────

@@ -1,6 +1,7 @@
 'use strict';
-const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const bcrypt = require(require.resolve('bcryptjs', { paths: [path.resolve(__dirname, '../backend')] }));
+const { v4: uuidv4 } = require(require.resolve('uuid', { paths: [path.resolve(__dirname, '../backend')] }));
 
 const customerId1 = uuidv4();
 const workerId1   = uuidv4();

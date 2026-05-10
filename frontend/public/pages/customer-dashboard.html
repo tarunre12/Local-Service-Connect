@@ -580,7 +580,10 @@ function stopTracking() {
 }
 
 // Init
-loadDashboard();
+const requestedPage = new URLSearchParams(window.location.search).get('page');
+loadDashboard().finally(() => {
+  if (pages.includes(requestedPage)) showPage(requestedPage);
+});
 
 // ── Real-time Customer Location Tracking ──────────────────────
 let customerWatchId = null;
