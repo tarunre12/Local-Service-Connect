@@ -16,7 +16,11 @@ serviconnect/
 │   ├── middleware/
 │   │   └── auth.js               ← JWT protect + authorize helpers
 │   ├── models/
-│   │   └── store.js              ← In-memory data store (seed data included)
+│   │   ├── index.js              ← Sequelize model bootstrap + associations
+│   │   ├── Customer.js           ← Customer model
+│   │   ├── Worker.js             ← Worker model
+│   │   ├── Booking.js            ← Booking model
+│   │   └── Review.js             ← Review + sentiment model
 │   └── routes/
 │       ├── auth.js               ← POST /api/auth/customer/* and /worker/*
 │       ├── customer.js           ← GET/POST /api/customer/*
@@ -148,22 +152,25 @@ PATCH /api/worker/jobs/:id/complete — Mark job done + set price { price: 850 }
 
 ---
 
-## 🗃️ Connect a Real Database (MongoDB)
+## 🗃️ Database & Real-Time Storage
 
-The app currently uses an in-memory store (data resets on server restart).  
-To use MongoDB:
+ServiConnect now runs on **PostgreSQL via Sequelize** for customers, workers, bookings, and reviews.  
+Use the existing migration and seed commands from `backend/`:
 
-1. Install mongoose: `npm install mongoose`
-2. Add `MONGO_URI` to your `.env`
-3. Create `backend/config/db.js`:
-```js
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error(err));
+```bash
+npm run migrate
+npm run seed
 ```
-4. Call `require('./config/db')` at top of `server.js`
-5. Convert `models/store.js` to Mongoose schemas
+
+For real-time features, the infrastructure templates now provision **two DynamoDB tables**:
+
+- `*-chat-messages` for booking chat history
+- `*-location-updates` for worker location tracking events
+
+The deployed backend can read those table names from:
+
+- `DYNAMODB_CHAT_TABLE`
+- `DYNAMODB_LOCATION_TABLE`
 
 ---
 
@@ -173,7 +180,8 @@ mongoose.connect(process.env.MONGO_URI)
 |-------|-----------|
 | Backend | Node.js + Express |
 | Auth | JWT (jsonwebtoken) + bcryptjs |
-| Database | In-memory (dev) → MongoDB (production) |
+| Database | PostgreSQL (Sequelize ORM) |
+| Real-time storage | DynamoDB (chat + live location tables) |
 | Frontend | Vanilla HTML + CSS + JavaScript |
 | Fonts | Google Fonts — Syne + DM Sans |
 | Deployment | Any Node.js host: Railway, Render, Vercel, VPS |
@@ -215,7 +223,7 @@ See the [Deployment Guides](./docs/DEPLOYMENT_GUIDE.md) for full instructions on
 
 ## 📱 Future Enhancements
 
-- [ ] Google Maps live tracking integration (add GOOGLE_MAPS_API_KEY to .env)
+- [ ] Optional Google Maps provider support (Leaflet live tracking is already available in the dashboards)
 - [ ] Push notifications (Firebase FCM)
 - [ ] In-app payment (Razorpay / Stripe)
 - [ ] Telugu language AI support (Sarvam AI API)

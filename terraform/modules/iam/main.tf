@@ -57,6 +57,18 @@ resource "aws_iam_role_policy" "ecs_task_permissions" {
       # SSM — read config
       { Effect = "Allow", Action = ["ssm:GetParameter", "ssm:GetParameters"],
         Resource = "arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/serviconnect/*" },
+      # DynamoDB — persist chat messages and worker locations
+      { Effect = "Allow", Action = [
+          "dynamodb:BatchGetItem", "dynamodb:BatchWriteItem", "dynamodb:DeleteItem",
+          "dynamodb:DescribeTable", "dynamodb:GetItem", "dynamodb:PutItem",
+          "dynamodb:Query", "dynamodb:Scan", "dynamodb:UpdateItem"
+        ],
+        Resource = [
+          "arn:aws:dynamodb:${var.aws_region}:${var.account_id}:table/${var.name_prefix}-chat-messages",
+          "arn:aws:dynamodb:${var.aws_region}:${var.account_id}:table/${var.name_prefix}-chat-messages/index/*",
+          "arn:aws:dynamodb:${var.aws_region}:${var.account_id}:table/${var.name_prefix}-location-updates",
+          "arn:aws:dynamodb:${var.aws_region}:${var.account_id}:table/${var.name_prefix}-location-updates/index/*"
+        ] },
       # CloudWatch — write logs
       { Effect = "Allow", Action = ["logs:CreateLogStream", "logs:PutLogEvents"], Resource = "*" },
     ]

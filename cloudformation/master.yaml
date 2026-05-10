@@ -118,6 +118,13 @@ Resources:
         DbSecretArn: !GetAtt SecretsStack.Outputs.DbSecretArn
         EcsSecurityGroupId: !GetAtt EcsStack.Outputs.EcsSecurityGroupId
 
+  DynamoDbStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: templates/dynamodb.yaml
+      Parameters:
+        NamePrefix: !Sub '${ProjectName}-${Environment}'
+
   EcsStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -231,6 +238,20 @@ Resources:
       Type: String
       Value: !GetAtt CognitoStack.Outputs.ClientId
 
+  DynamoDbChatTableParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/${ProjectName}/dynamodb-chat-table'
+      Type: String
+      Value: !GetAtt DynamoDbStack.Outputs.ChatTableName
+
+  DynamoDbLocationTableParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/${ProjectName}/dynamodb-location-table'
+      Type: String
+      Value: !GetAtt DynamoDbStack.Outputs.LocationTableName
+
 Outputs:
   AlbDnsName:
     Description: Backend API URL (ALB)
@@ -253,4 +274,9 @@ Outputs:
   S3BucketName:
     Description: S3 bucket for frontend static files
     Value: !GetAtt S3CloudFrontStack.Outputs.BucketName
-
+  ChatDynamoDbTable:
+    Description: DynamoDB table for real-time chat messages
+    Value: !GetAtt DynamoDbStack.Outputs.ChatTableName
+  LocationDynamoDbTable:
+    Description: DynamoDB table for live worker location updates
+    Value: !GetAtt DynamoDbStack.Outputs.LocationTableName

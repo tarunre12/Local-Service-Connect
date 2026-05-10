@@ -34,6 +34,16 @@ output "s3_bucket_name" {
   value       = module.s3_cloudfront.bucket_name
 }
 
+output "chat_dynamodb_table_name" {
+  description = "DynamoDB table name for chat messages"
+  value       = module.dynamodb.chat_table_name
+}
+
+output "location_dynamodb_table_name" {
+  description = "DynamoDB table name for live worker location updates"
+  value       = module.dynamodb.location_table_name
+}
+
 output "aws_account_id" {
   description = "AWS Account ID"
   value       = data.aws_caller_identity.current.account_id

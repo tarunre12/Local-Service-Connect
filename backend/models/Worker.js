@@ -1,6 +1,10 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
+  const arrayOfStringsType = sequelize.getDialect() === 'postgres'
+    ? DataTypes.ARRAY(DataTypes.STRING)
+    : DataTypes.JSON;
+
   const Worker = sequelize.define('Worker', {
     id:           { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     firstName:    { type: DataTypes.STRING(100), allowNull: false },
@@ -8,7 +12,7 @@ module.exports = (sequelize) => {
     email:        { type: DataTypes.STRING(255), allowNull: true, unique: true },
     phone:        { type: DataTypes.STRING(20),  allowNull: false, unique: true },
     city:         { type: DataTypes.STRING(100), allowNull: true },
-    skills:       { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+    skills:       { type: arrayOfStringsType, defaultValue: [] },
     experience:   { type: DataTypes.STRING(500), allowNull: true },
     passwordHash: { type: DataTypes.STRING,      allowNull: false },
     avatar:       { type: DataTypes.STRING(10),  defaultValue: '👷' },

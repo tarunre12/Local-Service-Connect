@@ -1,21 +1,15 @@
 # Backend DB Integration TODO
 Previous: Root Sequelize setup done.
 
-**Current Status:** Structure ready, no code changes to routes yet.
+**Current Status:** Completed — backend routes now run against Sequelize/PostgreSQL models, the stale generated migrations have been neutralized, and the remaining schema gaps are covered by migrations instead of the in-memory store.
 
-**5. Backend Sequelize Setup**
-- Create backend/models/index.js (link to root models/ via path)
-- Update backend/server.js (import db, connect)
-- Refactor backend/models/store.js to use Sequelize models
+**Completed Work**
+- Backend models are initialized through `backend/models/index.js`
+- Auth, customer, and worker routes use Sequelize CRUD APIs
+- SQLite-compatible model fallbacks are in place for the existing Jest test harness
+- Fresh PostgreSQL migrations now include the worker operational columns required by production routes
 
-**6. Code Refactor**
-- Replace array ops with model.findByPk/create/findAll/update etc.
-- Handle ID change: string prefix -> INTEGER auto
-- Associations: Customer.hasMany(Bookings), etc.
-
-**7. Migrate & Test**
-- Start Postgres, `npm run db:migrate`
-- Seed
-- Test endpoints
-
-Next tool steps incoming.
+**Validation Checklist**
+- Run `npm test` inside `backend/`
+- Run `npm run migrate` against PostgreSQL
+- Run `npm run seed` against PostgreSQL

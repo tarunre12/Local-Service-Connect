@@ -57,6 +57,8 @@ async function loadConfig() {
       sesFromEmail:     process.env.SES_FROM_EMAIL,
       cognitoUserPoolId:process.env.COGNITO_USER_POOL_ID,
       cognitoClientId:  process.env.COGNITO_CLIENT_ID,
+      dynamoChatTable:  process.env.DYNAMODB_CHAT_TABLE || '',
+      dynamoLocationTable: process.env.DYNAMODB_LOCATION_TABLE || '',
     };
   }
 
@@ -70,7 +72,8 @@ async function loadConfig() {
   const [
     dbHost, dbPort, dbName, frontendUrl,
     bedrockModelId, bedrockRegion, sesFromEmail,
-    cognitoUserPoolId, cognitoClientId
+    cognitoUserPoolId, cognitoClientId,
+    dynamoChatTable, dynamoLocationTable
   ] = await Promise.all([
     getParameter(`/${APP_NAME}/db-host`),
     getParameter(`/${APP_NAME}/db-port`),
@@ -81,6 +84,8 @@ async function loadConfig() {
     getParameter(`/${APP_NAME}/ses-from-email`),
     getParameter(`/${APP_NAME}/cognito-user-pool-id`),
     getParameter(`/${APP_NAME}/cognito-client-id`),
+    getParameter(`/${APP_NAME}/dynamodb-chat-table`),
+    getParameter(`/${APP_NAME}/dynamodb-location-table`),
   ]);
 
   return {
@@ -99,6 +104,8 @@ async function loadConfig() {
     sesFromEmail:     process.env.SES_FROM_EMAIL || sesFromEmail,
     cognitoUserPoolId:process.env.COGNITO_USER_POOL_ID || cognitoUserPoolId,
     cognitoClientId:  process.env.COGNITO_CLIENT_ID || cognitoClientId,
+    dynamoChatTable:  process.env.DYNAMODB_CHAT_TABLE || dynamoChatTable,
+    dynamoLocationTable: process.env.DYNAMODB_LOCATION_TABLE || dynamoLocationTable,
   };
 }
 
